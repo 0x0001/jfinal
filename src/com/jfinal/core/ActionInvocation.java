@@ -47,25 +47,37 @@ public class ActionInvocation {
 	 * Invoke the action.
 	 */
 	public void invoke() {
-		if (index < inters.length)
+		if (index < inters.length) {
 			inters[index++].intercept(this);
-		else if (index++ == inters.length)	// index++ ensure invoke action only one time
+		} else if (index++ == inters.length) {	// index++ ensure invoke action only one time
 			// try {action.getMethod().invoke(controller, NULL_ARGS);} catch (Exception e) {throw new RuntimeException(e);}
+			/*
 			try {
 				action.getMethod().invoke(controller, NULL_ARGS);
-			}
-			catch (InvocationTargetException e) {
+			} catch (InvocationTargetException e) {
 				Throwable cause = e.getTargetException();
 				if (cause instanceof RuntimeException)
 					throw (RuntimeException)cause;
 				throw new RuntimeException(e);
-			}
-			catch (RuntimeException e) {
+			} catch (RuntimeException e) {
 				throw e;
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+			*/
+			String methodName = action.getMethodName();
+			try {
+				action.getMethod().invoke(controller, NULL_ARGS);
+			} catch (InvocationTargetException e) {
+				Throwable cause = e.getTargetException();
+				if (cause instanceof RuntimeException)
+					controller.handlerException((RuntimeException)cause, methodName);
+				controller.handlerException(e, methodName);
+			} catch (Exception e) {
+				controller.handlerException(e, methodName);
+			}
+		}
+			
 	}
 	
 	/**

@@ -1072,6 +1072,14 @@ public abstract class Controller {
 	public void renderHtml(String htmlText) {
 		render = renderFactory.getHtmlRender(htmlText);
 	}
+
+	protected void handlerException(Exception e, String methodName) {
+		if (e instanceof RuntimeException) {
+			throw (RuntimeException)e;
+		} else {
+			throw new RuntimeException(e);
+		}
+	}
 }
 
 
