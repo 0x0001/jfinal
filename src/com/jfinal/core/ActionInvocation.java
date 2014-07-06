@@ -70,9 +70,11 @@ public class ActionInvocation {
 				action.getMethod().invoke(controller, NULL_ARGS);
 			} catch (InvocationTargetException e) {
 				Throwable cause = e.getTargetException();
-				if (cause instanceof RuntimeException)
+				if (cause instanceof RuntimeException) {
 					controller.handlerException((RuntimeException)cause, methodName);
-				controller.handlerException(e, methodName);
+				} else {
+					controller.handlerException(e, methodName);
+				}
 			} catch (Exception e) {
 				controller.handlerException(e, methodName);
 			}
