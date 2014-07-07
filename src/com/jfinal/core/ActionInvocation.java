@@ -16,9 +16,10 @@
 
 package com.jfinal.core;
 
+import com.jfinal.aop.Interceptor;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import com.jfinal.aop.Interceptor;
 
 /**
  * ActionInvocation invoke the action
@@ -50,21 +51,6 @@ public class ActionInvocation {
 		if (index < inters.length) {
 			inters[index++].intercept(this);
 		} else if (index++ == inters.length) {	// index++ ensure invoke action only one time
-			// try {action.getMethod().invoke(controller, NULL_ARGS);} catch (Exception e) {throw new RuntimeException(e);}
-			/*
-			try {
-				action.getMethod().invoke(controller, NULL_ARGS);
-			} catch (InvocationTargetException e) {
-				Throwable cause = e.getTargetException();
-				if (cause instanceof RuntimeException)
-					throw (RuntimeException)cause;
-				throw new RuntimeException(e);
-			} catch (RuntimeException e) {
-				throw e;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-			*/
 			String methodName = action.getMethodName();
 			try {
 				action.getMethod().invoke(controller, NULL_ARGS);

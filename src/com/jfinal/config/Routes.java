@@ -16,18 +16,20 @@
 
 package com.jfinal.config;
 
+import com.jfinal.core.Controller;
+
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import com.jfinal.core.Controller;
 
 /**
  * Routes.
  */
 public abstract class Routes {
 	
-	private final Map<String, Class<? extends Controller>> map = new HashMap<String, Class<? extends Controller>>();
+	private final Map<String, Set<Class<? extends Controller>>> map = new HashMap<String, Set<Class<? extends Controller>>>();
 	private final Map<String, String> viewPathMap = new HashMap<String, String>();
 	
 	/**
@@ -62,11 +64,20 @@ public abstract class Routes {
 			throw new IllegalArgumentException("The controllerClass can not be null");
 		if (!controllerKey.startsWith("/"))
 			controllerKey = "/" + controllerKey;
-		if (map.containsKey(controllerKey))
-			throw new IllegalArgumentException("The controllerKey already exists: " + controllerKey);
-		
-		map.put(controllerKey, controllerClass);
-		
+
+
+		Set<Class<? extends Controller>> controllers = map.get(controllerKey);
+		if (controllers == null) {
+			controllers = new HashSet<Class<? extends Controller>>();
+			map.put(controllerKey, controllers);
+		}
+
+//		if (map.containsKey(controllerKey))
+//			throw new IllegalArgumentException("The controllerKey already exists: " + controllerKey);
+//		map.put(controllerKey, controllerClass);
+
+		controllers.add(controllerClass);
+
 		if (viewPath == null || "".equals(viewPath.trim()))	// view path is controllerKey by default
 			viewPath = controllerKey;
 		
@@ -93,7 +104,7 @@ public abstract class Routes {
 		return add(controllerkey, controllerClass, controllerkey);
 	}
 	
-	public Set<Entry<String, Class<? extends Controller>>> getEntrySet() {
+	public Set<Entry<String, Set<Class<? extends Controller>>>> getEntrySet() {
 		return map.entrySet();
 	}
 	

@@ -16,19 +16,15 @@
 
 package com.jfinal.core;
 
-import java.io.IOException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import com.jfinal.config.Constants;
 import com.jfinal.config.JFinalConfig;
 import com.jfinal.handler.Handler;
 import com.jfinal.log.Logger;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * JFinal framework filter
@@ -70,8 +66,7 @@ public final class JFinalFilter implements Filter {
 		boolean[] isHandled = {false};
 		try {
 			handler.handle(target, request, response, isHandled);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			if (log.isErrorEnabled()) {
 				String qs = request.getQueryString();
 				log.error(qs == null ? target : target + "?" + qs, e);
