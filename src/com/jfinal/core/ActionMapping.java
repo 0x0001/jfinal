@@ -77,6 +77,9 @@ final class ActionMapping {
 							if (!actionKey.startsWith(SLASH))
 								actionKey = SLASH + actionKey;
 
+							// 拼上控制器名
+							actionKey = controllerKey.equals(SLASH) ? actionKey : controllerKey + actionKey;
+
 							if (mapping.containsKey(actionKey)) {
 								warnning(actionKey, controllerClass, method);
 								continue;
