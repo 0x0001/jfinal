@@ -25,7 +25,7 @@ public class TempFileRender extends FileRender {
 		try {
 			super.render();
 		} finally {
-			if (file == null) {
+			if (file != null) {
 				if (!file.delete()) {
 					file.deleteOnExit();
 				}
