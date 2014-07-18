@@ -16,16 +16,14 @@
 
 package com.jfinal.render;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import com.jfinal.plugin.activerecord.CPI;
 import com.jfinal.plugin.activerecord.Model;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  * JspRender.
@@ -62,11 +60,27 @@ public class JspRender extends Render {
 	private static int DEPTH = 8;
 	
 	private void supportActiveRecord(HttpServletRequest request) {
+
+		// 先使用session中的变量设置
+		HttpSession session = request.getSession();
+		if (session != null) {
+			for (Enumeration<String> attrs = session.getAttributeNames(); attrs.hasMoreElements();) {
+				String key = attrs.nextElement();
+				Object value = session.getAttribute(key);
+				request.setAttribute(key, handleObject(value, DEPTH));
+			}
+		}
+
+
+		// 再使用request中的变量设置
 		for (Enumeration<String> attrs = request.getAttributeNames(); attrs.hasMoreElements();) {
 			String key = attrs.nextElement();
 			Object value = request.getAttribute(key);
 			request.setAttribute(key, handleObject(value, DEPTH));
 		}
+
+
+
 	}
 	
 	private Object handleObject(Object value, int depth) {
