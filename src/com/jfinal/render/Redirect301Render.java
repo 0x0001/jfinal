@@ -39,8 +39,11 @@ public class Redirect301Render extends Render {
 	}
 	
 	public void render() {
-		if (contextPath != null && url.indexOf("://") == -1)
-			url = contextPath + url;
+		if(!RedirectRender.isRelativePath(url)) {
+			if (contextPath != null && !url.contains("://")) {
+				url = contextPath + url;
+			}
+		}
 		
 		if (withQueryString) {
 			String queryString = request.getQueryString();

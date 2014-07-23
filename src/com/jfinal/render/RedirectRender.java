@@ -16,8 +16,9 @@
 
 package com.jfinal.render;
 
-import java.io.IOException;
 import com.jfinal.core.JFinal;
+
+import java.io.IOException;
 
 /**
  * RedirectRender with status: 302 Found.
@@ -33,6 +34,10 @@ public class RedirectRender extends Render {
 		String cp = JFinal.me().getContextPath();
 		return ("".equals(cp) || "/".equals(cp)) ? null : cp;
 	}
+
+	static boolean isRelativePath(String url) {
+		return url.startsWith(".") || url.contains("./") || url.contains("/.");
+	}
 	
 	public RedirectRender(String url) {
 		this.url = url;
@@ -43,15 +48,21 @@ public class RedirectRender extends Render {
 		this.url = url;
 		this.withQueryString =  withQueryString;
 	}
+
+
+
 	
 	public void render() {
-		if (contextPath != null && url.indexOf("://") == -1)
-			url = contextPath + url;
+		if(!isRelativePath(url)) {
+			if (contextPath != null && !url.contains("://")) {
+				url = contextPath + url;
+			}
+		}
 		
 		if (withQueryString) {
 			String queryString = request.getQueryString();
 			if (queryString != null)
-				if (url.indexOf("?") == -1)
+				if (!url.contains("?"))
 					url = url + "?" + queryString;
 				else
 					url = url + "&" + queryString;
