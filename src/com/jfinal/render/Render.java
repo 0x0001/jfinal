@@ -16,10 +16,13 @@
 
 package com.jfinal.render;
 
-import java.io.Serializable;
+import com.jfinal.core.Const;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.jfinal.core.Const;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Render.
@@ -73,4 +76,14 @@ public abstract class Render implements Serializable {
 	 * Render to client
 	 */
 	public abstract void render();
+
+	protected void safeClose(Closeable io) {
+		if (io != null) {
+			try {
+				io.close();
+			} catch (IOException e) {
+				// quiet
+			}
+		}
+	}
 }

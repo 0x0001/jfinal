@@ -17,7 +17,7 @@
 package com.jfinal.render;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 
 /**
  * TextRender.
@@ -39,7 +39,8 @@ public class TextRender extends Render {
 	}
 	
 	public void render() {
-		PrintWriter writer = null;
+
+		OutputStream out = null;
 		try {
 			response.setHeader("Pragma", "no-cache");	// HTTP/1.0 caches might not implement Cache-Control and might only implement Pragma: no-cache
 	        response.setHeader("Cache-Control", "no-cache");
@@ -52,16 +53,15 @@ public class TextRender extends Render {
 	        	response.setContentType(contentType);
 				response.setCharacterEncoding(getEncoding());
 	        }
-	        
-	        writer = response.getWriter();
-	        writer.write(text);
-	        writer.flush();
+
+			out = response.getOutputStream();
+
+			out.write(text.getBytes());
+			out.flush();
 		} catch (IOException e) {
 			throw new RenderException(e);
-		}
-		finally {
-			if (writer != null)
-				writer.close();
+		} finally {
+			safeClose(out);
 		}
 	}
 }

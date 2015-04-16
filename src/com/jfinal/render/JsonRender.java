@@ -16,12 +16,13 @@
 
 package com.jfinal.render;
 
+import com.jfinal.kit.JsonKit;
+
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import com.jfinal.kit.JsonKit;
 
 /**
  * JsonRender.
@@ -93,23 +94,22 @@ public class JsonRender extends Render {
 	public void render() {
 		if (jsonText == null)
 			buildJsonText();
-		
-		PrintWriter writer = null;
+
+		OutputStream out = null;
 		try {
 			response.setHeader("Pragma", "no-cache");	// HTTP/1.0 caches might not implement Cache-Control and might only implement Pragma: no-cache
 			response.setHeader("Cache-Control", "no-cache");
 			response.setDateHeader("Expires", 0);
 			
 			response.setContentType(forIE ? contentTypeForIE : contentType);
-			writer = response.getWriter();
-	        writer.write(jsonText);
-	        writer.flush();
+
+			out = response.getOutputStream();
+			out.write(jsonText.getBytes());
+			out.flush();
 		} catch (IOException e) {
 			throw new RenderException(e);
-		}
-		finally {
-			if (writer != null)
-				writer.close();
+		} finally {
+			safeClose(out);
 		}
 	}
 	

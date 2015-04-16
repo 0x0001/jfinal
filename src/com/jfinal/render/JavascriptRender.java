@@ -17,7 +17,7 @@
 package com.jfinal.render;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 
 /**
  * JavascriptRender.
@@ -33,18 +33,16 @@ public class JavascriptRender extends Render {
 	}
 	
 	public void render() {
-		PrintWriter writer = null;
+		OutputStream out = null;
 		try {
 			response.setContentType(contentType);
-	        writer = response.getWriter();
-	        writer.write(jsText);
-	        writer.flush();
+			out = response.getOutputStream();
+			out.write(jsText.getBytes());
+			out.flush();
 		} catch (IOException e) {
 			throw new RenderException(e);
-		}
-		finally {
-			if (writer != null)
-				writer.close();
+		} finally {
+			safeClose(out);
 		}
 	}
 }

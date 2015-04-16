@@ -16,16 +16,12 @@
 
 package com.jfinal.render;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import javax.servlet.ServletContext;
-import static com.jfinal.core.Const.DEFAULT_FILE_CONTENT_TYPE;
 import com.jfinal.kit.PathKit;
+
+import javax.servlet.ServletContext;
+import java.io.*;
+
+import static com.jfinal.core.Const.DEFAULT_FILE_CONTENT_TYPE;
 
 /**
  * FileRender.
@@ -93,25 +89,14 @@ public class FileRender extends Render {
                 outputStream.write(buffer, 0, n);
             }
             outputStream.flush();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
         	throw new RenderException(e);
-        }
-        finally {
-            if (inputStream != null) {
-                try {
-					inputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            }
-            if (outputStream != null) {
-            	try {
-					outputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-            }
+        } finally {
+			try {
+				safeClose(inputStream);
+			} finally {
+				safeClose(outputStream);
+			}
         }
 	}
 }
